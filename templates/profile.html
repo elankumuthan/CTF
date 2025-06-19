@@ -1,0 +1,9 @@
+<h2>Profile: {{ user.name }}</h2>
+<img src="/{{ user.avatar }}" width="250">
+
+{% if file_hint %}
+  <p style="margin-top:10px;">
+    You have 1 recent upload. Try accessing it via:  
+    <code>/download/{{ file_hint }}</code>
+  </p>
+{% endif %}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Note - my_ctf</title>
+</head>
+<body>
+    <h2>Upload a Note</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".png"><br><br>
+        <input type="submit" value="Upload">
+    </form>
+
+    {% if result %}
+        <p>✅ File uploaded successfully.</p>
+    {% elif error %}
+        <p style="color:red">{{ error }}</p>
+    {% endif %}
+
+</html>

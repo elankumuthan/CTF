@@ -1,0 +1,25 @@
+# Use a lightweight Python image
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . /app
+
+# Install dependencies + basic tools
+RUN apt update && \
+    apt install -y net-tools iproute2 lsof curl && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Initialize DB and custom files
+RUN python3 utils/clear_db.py && python3 utils/init_db.py
+RUN mkdir -p /home/ey_user && \
+    cp utils/users.db /home/ey_user/database.db
+
+COPY utils/etc_passwd_custom /etc/passwd
+COPY utils/bash_history_custom /home/ey_user/.bash_history
+
+EXPOSE 5000
+
+CMD ["python3", "-u", "app.py"]
