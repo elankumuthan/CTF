@@ -59,7 +59,7 @@ def view_profile():
 
     # File hint logic
     file_hint = None
-    if username == "admin":
+    if g.user == "admin":
         try:
             files = os.listdir("uploads/admin")
             if files:
@@ -69,12 +69,21 @@ def view_profile():
         except:
             file_hint = None
 
-    elif username == "EY":
+    elif g.user == "EY_user123":
         try:
-            files = os.listdir("uploads/EY")
+            files = os.listdir("uploads/EY_user123")
             if files:
-                files.sort(key=lambda f: os.path.getmtime(os.path.join("uploads/EY", f)), reverse=True)
-                file_hint = f"EY/{files[0]}"
+                files.sort(key=lambda f: os.path.getmtime(os.path.join("uploads/EY_user123", f)), reverse=True)
+                file_hint = f"EY_user123/{files[0]}"
+        except:
+            file_hint = None
+
+    elif g.user == "guest":
+        try:
+            files = os.listdir("uploads/guest")
+            if files:
+                files.sort(key=lambda f: os.path.getmtime(os.path.join("uploads/guest", f)), reverse=True)
+                file_hint = f"guest/{files[0]}"
         except:
             file_hint = None
 
