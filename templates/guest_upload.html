@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Access Denied - my_ctf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Monaco, monospace;
+            background: #0a0a0a;
+            color: #ff0000;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #4d1a1a 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #4d1a4d 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Matrix-style background effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #ff0000;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Error container */
+        .error-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 0, 0.5),
+                inset 0 0 30px rgba(255, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        .error-container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #cc0000, #880000, #ff0000);
+            border-radius: 10px;
+            z-index: -1;
+            animation: border-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes border-glow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Error skull icon */
+        .error-icon {
+            font-size: 4em;
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0000;
+            animation: pulse-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { 
+                text-shadow: 0 0 10px #ff0000;
+                transform: scale(1);
+            }
+            100% { 
+                text-shadow: 0 0 30px #ff0000, 0 0 40px #ff0000;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Error title */
+        .error-title {
+            color: #ff0000;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #ff0000;
+            animation: flicker 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 20px #ff0000;
+            }
+            20%, 24%, 55% {
+                opacity: 0.4;
+                text-shadow: none;
+            }
+        }
+
+        /* Error code */
+        .error-code {
+            color: #ffaa00;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Error message */
+        .error-message {
+            color: #cccccc;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            border-left: 4px solid #ff0000;
+        }
+
+        /* Stack trace */
+        .stack-trace {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 0.9em;
+            color: #888;
+            max-height: 300px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .stack-trace::before {
+            content: "STACK TRACE";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0a0a0a;
+            padding: 0 10px;
+            font-size: 0.7em;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .stack-trace pre {
+            margin: 0;
+            color: #ff6666;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .file-path {
+            color: #00aaff;
+        }
+
+        .line-number {
+            color: #ffaa00;
+        }
+
+        .error-highlight {
+            color: #ff0000;
+            font-weight: bold;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Solutions section */
+        .solutions {
+            background: rgba(0, 100, 0, 0.1);
+            border: 1px solid #00aa00;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            position: relative;
+        }
+
+        .solutions::before {
+            content: "POSSIBLE SOLUTIONS";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0a0a0a;
+            padding: 0 10px;
+            font-size: 0.7em;
+            color: #00aa00;
+            letter-spacing: 2px;
+        }
+
+        .solutions h3 {
+            color: #00ff00;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .solutions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .solutions li {
+            color: #cccccc;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .solutions li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #00aa00;
+        }
+
+        .solutions code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #ffaa00;
+            font-family: 'Courier New', Monaco, monospace;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Monaco, monospace;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(45deg, #cc0000, #ff0000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(45deg, #333, #555);
+        }
+
+        .action-btn.secondary:hover {
+            background: linear-gradient(45deg, #555, #666);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Terminal-style cursor */
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Scan line effect */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            animation: scan 4s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* System info */
+        .system-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #666;
+            font-size: 0.8em;
+            text-align: right;
+            z-index: 15;
+        }
+
+        .system-info div {
+            margin-bottom: 5px;
+        }
+
+        /* Glitch effect for error text */
+        .glitch {
+            animation: glitch 0.5s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .error-container {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .error-title {
+                font-size: 2em;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix background effect -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Scan line effect -->
+    <div class="scan-line"></div>
+    
+    <!-- System info -->
+    <div class="system-info">
+        <div>SYSTEM: my_ctf_web</div>
+        <div>STATUS: <span style="color: #ff0000;">CRITICAL ERROR</span></div>
+        <div id="timestamp"></div>
+    </div>
+
+    <div class="error-container">
+        <div class="error-icon">💀</div>
+        <h1 class="error-title glitch">ACCESS DENIED<span class="cursor">_</span></h1>
+        <div class="error-code">ERROR CODE: 403 | PERMISSION DENIED</div>
+        
+        <div class="error-message">
+            <strong>SECURITY BREACH DETECTED:</strong><br>
+            The system has encountered a critical permission error while attempting to process your file upload request. Access to the secure file storage area has been restricted.
+        </div>
+
+        <div class="action-buttons">
+            <a href="/" class="action-btn">Return to Base</a>
+            <a href="/upload" class="action-btn secondary">Retry Upload</a>
+        </div>
+    </div>
+
+    <script>
+        // Create matrix rain effect
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンERRORACCESSDENIEDPERMISSION';
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
+            }
+        }
+
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = 
+                `TIME: ${now.toISOString().replace('T', ' ').split('.')[0]} UTC`;
+        }
+
+        // Add random glitch effect
+        function addGlitchEffect() {
+            const glitchElements = document.querySelectorAll('.glitch');
+            glitchElements.forEach(el => {
+                if (Math.random() < 0.1) {
+                    el.style.animation = 'none';
+                    setTimeout(() => {
+                        el.style.animation = 'glitch 0.5s infinite';
+                    }, 50);
+                }
+            });
+        }
+
+        // Initialize effects
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            updateTimestamp();
+            
+            // Update timestamp every second
+            setInterval(updateTimestamp, 1000);
+            
+            // Add glitch effect randomly
+            setInterval(addGlitchEffect, 2000);
+        });
+
+        // Refresh matrix effect periodically
+        setInterval(() => {
+            const matrixBg = document.getElementById('matrixBg');
+            if (matrixBg.children.length < 50) {
+                const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンERRORACCESSDENIEDPERMISSION';
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrixBg.appendChild(char);
+            }
+        }, 1000);
+
+        // Add some console easter eggs for CTF players
+        console.log('%c🔴 SYSTEM ERROR DETECTED 🔴', 'color: red; font-size: 16px; font-weight: bold;');
+        console.log('%cPermission denied accessing: uploads/guest/exploit.txt', 'color: red; font-size: 12px;');
+        console.log('%cCTF_FLAG_HINT: {sometimes_errors_reveal_paths}', 'color: red; font-size: 10px;');
+    </script>
+</body>
+</html>

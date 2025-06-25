@@ -12,7 +12,7 @@ def hash_bcrypt(plain_pw):
 def initialize_db():
     conn = None
     try:
-        conn = sqlite3.connect('users.db')
+        conn = sqlite3.connect('utils/users.db')
         c = conn.cursor()
 
         c.execute('DROP TABLE IF EXISTS users')
@@ -20,7 +20,7 @@ def initialize_db():
 
         users = [
             ('admin', 'sup3rs3cur3p@ssw0rd'),
-            ('EY_user123', 'EYpass!!!@@@'),
+            ('ey_user123', 'EYpass!!!@@@'),
             ('guest', 'Gu3stp@ss!')
         ]
 

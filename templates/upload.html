@@ -1,13 +1,571 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Wallpaper</title>
+    <title>Upload Wallpaper - my_ctf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Monaco, monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #1a4d1a 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #1a1a4d 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Matrix-style background effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Navbar styling with hacker theme */
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 15px;
+            border-bottom: 2px solid #00ff00;
+            box-shadow: 0 2px 20px rgba(0, 255, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar::before {
+            content: "SECURE ACCESS TERMINAL";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .navbar a {
+            margin-right: 25px;
+            text-decoration: none;
+            color: #00ff00;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            text-decoration: none;
+            border: 1px solid #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Main content container */
+        .main-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 0, 0.3),
+                inset 0 0 30px rgba(0, 255, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .main-container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, #00cc00, #008800, #00ff00);
+            border-radius: 10px;
+            z-index: -1;
+            animation: border-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes border-glow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        h2 {
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #00ff00;
+            animation: pulse-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 10px #00ff00; }
+            100% { text-shadow: 0 0 30px #00ff00, 0 0 40px #00ff00; }
+        }
+
+        /* Upload form styling */
+        .upload-form {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .upload-form::before {
+            content: "FILE TRANSFER PROTOCOL";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0a0a0a;
+            padding: 0 10px;
+            font-size: 0.7em;
+            color: #888;
+            letter-spacing: 2px;
+        }
+
+        /* File input styling */
+        .file-input-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-input-display {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-display::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .file-input-display:hover::before {
+            left: 100%;
+        }
+
+        .file-input-display:hover {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #666;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .file-input-display:hover .upload-icon {
+            color: #00ff00;
+        }
+
+        .upload-text {
+            color: #888;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .file-input-display:hover .upload-text {
+            color: #00ff00;
+        }
+
+        .file-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .selected-file {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .selected-file .upload-icon,
+        .selected-file .upload-text {
+            color: #00ff00;
+        }
+
+        /* Submit button styling */
+        .upload-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Monaco, monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .upload-button:hover::before {
+            left: 100%;
+        }
+
+        .upload-button:hover {
+            background: linear-gradient(45deg, #00cc00, #00ff00);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+        }
+
+        .upload-button:active {
+            transform: translateY(0);
+        }
+
+        .upload-button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00cc00);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progress-shine 1.5s ease-in-out infinite;
+        }
+
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Terminal-style cursor */
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Scan line effect */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 3s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* File type restrictions display */
+        .file-restrictions {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid #ffa500;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #ffa500;
+        }
+
+        .file-restrictions::before {
+            content: "⚠ SECURITY PROTOCOLS";
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffcc00;
+        }
+    </style>
 </head>
 <body>
-    <h2>Upload Wallpaper</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"><br><br>
-        <input type="submit" value="Upload">
-    </form>
+    <!-- Matrix background effect -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Scan line effect -->
+    <div class="scan-line"></div>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/upload">Upload</a>
+        <a href="/profile">Profile</a>
+        <a href="/comment">Comment</a>
+        {% if g.user %}
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% endif %}
+    </div>
+    
+    <div class="main-container">
+        <h2>Upload Wallpaper<span class="cursor">_</span></h2>
+        
+        <form method="POST" enctype="multipart/form-data" class="upload-form" id="uploadForm">
+            <div class="file-input-container">
+                <div class="file-input-wrapper">
+                    <input type="file" name="file" class="file-input" id="fileInput" accept="image/*">
+                    <div class="file-input-display" id="fileDisplay">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Select file to upload</div>
+                        <div class="file-info">Click or drag file here</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <input type="submit" value="Upload" class="upload-button" id="uploadButton">
+            
+            <div class="file-restrictions">
+                Accepted file types: Images (JPG, PNG, GIF, BMP)<br>
+                Maximum file size: 10MB<br>
+                Files will be processed through security scanner
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Create matrix rain effect
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
+            }
+        }
+
+        // File input handling
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            
+            const fileInput = document.getElementById('fileInput');
+            const fileDisplay = document.getElementById('fileDisplay');
+            const uploadForm = document.getElementById('uploadForm');
+            const uploadButton = document.getElementById('uploadButton');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+
+            // Handle file selection
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    fileDisplay.classList.add('selected-file');
+                    fileDisplay.innerHTML = `
+                        <div class="upload-icon">✓</div>
+                        <div class="upload-text">File selected: ${file.name}</div>
+                        <div class="file-info">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    `;
+                } else {
+                    fileDisplay.classList.remove('selected-file');
+                    fileDisplay.innerHTML = `
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Select file to upload</div>
+                        <div class="file-info">Click or drag file here</div>
+                    `;
+                }
+            });
+
+            // Handle drag and drop
+            fileDisplay.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#00ff00';
+                this.style.background = 'rgba(0, 255, 0, 0.1)';
+            });
+
+            fileDisplay.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#333';
+                this.style.background = 'rgba(0, 0, 0, 0.7)';
+            });
+
+            fileDisplay.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#333';
+                this.style.background = 'rgba(0, 0, 0, 0.7)';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            });
+
+            // Handle form submission
+            uploadForm.addEventListener('submit', function(e) {
+                
+                if (!fileInput.files[0]) {
+                    alert('Please select a file to upload');
+                    return;
+                }
+
+                // Simulate upload process
+                uploadButton.disabled = true;
+                uploadButton.value = 'UPLOADING...';
+                progressContainer.style.display = 'block';
+                
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 100) progress = 100;
+                    
+                    progressFill.style.width = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        uploadButton.value = 'UPLOAD COMPLETE';
+                        uploadButton.style.background = 'linear-gradient(45deg, #00ff00, #00cc00)';
+                        
+                        setTimeout(() => {
+
+                            // Reset form
+                            uploadButton.disabled = fals
+                            uploadButton.value = 'Upload';
+                            uploadButton.style.background = 'linear-gradient(45deg, #00ff00, #00cc00)';
+                            progressContainer.style.display = 'none';
+                            progressFill.style.width = '0%';
+                            fileInput.value = '';
+                            fileDisplay.classList.remove('selected-file');
+                            fileDisplay.innerHTML = `
+                                <div class="upload-icon">📁</div>
+                                <div class="upload-text">Select file to upload</div>
+                                <div class="file-info">Click or drag file here</div>
+                            `;
+                        }, 1000);
+                    }
+                }, 200);
+            });
+        });
+
+        // Refresh matrix effect periodically
+        setInterval(() => {
+            const matrixBg = document.getElementById('matrixBg');
+            if (matrixBg.children.length < 50) {
+                const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrixBg.appendChild(char);
+            }
+        }, 1000);
+    </script>
 </body>
 </html>

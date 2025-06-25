@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, session, g
-import os, uuid
+import os
+from werkzeug.utils import secure_filename
 from .utils.login_required import login_required
 
 bp = Blueprint('upload', __name__, url_prefix='/upload')
@@ -11,23 +12,27 @@ os.makedirs(UPLOAD_BASE, exist_ok=True)
 @login_required
 def upload_wallpaper():
     if request.method == 'POST':
-        uploaded_file = request.files.get('file')
+        # ❌ Block guest users AFTER they try to upload
+        if g.user == 'guest':
+            return render_template("guest_upload.html"), 403
 
+        uploaded_file = request.files.get('file')
         if not uploaded_file:
             return "No file uploaded", 400
 
-        attacker_filename = uploaded_file.filename
+        # ✅ Admin uses ey_user123's folder for uploads
         user_folder = g.user
         user_path = os.path.join(UPLOAD_BASE, user_folder)
         os.makedirs(user_path, exist_ok=True)
 
-        save_path = os.path.join(user_path, attacker_filename)
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        # ✅ Sanitize filename
+        filename = secure_filename(uploaded_file.filename)
+        save_path = os.path.join(user_path, filename)
         uploaded_file.save(save_path)
 
-        # ✅ Also save it as avatar.png to show in profile
+        # ✅ Also save as avatar
         avatar_path = os.path.join(user_path, "avatar.png")
-        uploaded_file.seek(0)  # rewind file pointer before saving again
+        uploaded_file.seek(0)
         uploaded_file.save(avatar_path)
 
         return "Uploaded successfully. You can check your profile for more info."

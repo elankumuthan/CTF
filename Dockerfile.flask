@@ -4,22 +4,45 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY . /app
+# Add non-root user BEFORE copying files
+RUN adduser --disabled-password --gecos "" ey_user123
 
-# Install dependencies + basic tools
+# Install dependencies and tools, then clean up APT cache
 RUN apt update && \
-    apt install -y net-tools iproute2 lsof curl && \
-    pip install --no-cache-dir -r requirements.txt
+    apt install -y net-tools iproute2 lsof curl passwd && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-# Initialize DB and custom files
-RUN python3 utils/clear_db.py && python3 utils/init_db.py
-RUN mkdir -p /home/ey_user && \
-    cp utils/users.db /home/ey_user/database.db
+# Set root password
+RUN echo 'root:toor' | chpasswd
 
-COPY utils/etc_passwd_custom /etc/passwd
-COPY utils/bash_history_custom /home/ey_user/.bash_history
+# Copy all project files and force root ownership
+COPY . /app
+RUN chown -R root:root /app
 
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create upload folders and set permissions ONLY for uploads
+RUN mkdir -p /app/uploads/ey_user123 /app/uploads/guest /app/uploads/admin && \
+    chown -R ey_user123:ey_user123 /app/uploads && \
+    chmod -R 755 /app/uploads
+
+# Initialize DB (keep it in utils/ where the app expects it)
+RUN python3 utils/clear_db.py && \
+    python3 utils/init_db.py
+
+# Add fake bash history
+COPY utils/bash_history_custom /home/ey_user123/.bash_history
+RUN chown ey_user123:ey_user123 /home/ey_user123/.bash_history
+
+# Final ownership fix - ensure uploads stay with user
+RUN chown -R ey_user123:ey_user123 /app/uploads
+
+# Switch to non-root user
+USER ey_user123
+
+# Expose Flask port
 EXPOSE 5000
 
+# Run the application
 CMD ["python3", "-u", "app.py"]

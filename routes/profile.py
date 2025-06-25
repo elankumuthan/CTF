@@ -34,8 +34,8 @@ def view_profile():
         requested_user = users[user_id]
 
         # Only admin can view others' profiles
-        if g.user == "guest" and g.user != requested_user:
-            return "Forbidden: You can only view your own profile.", 403
+        if g.user != "admin" and g.user != requested_user:
+            return render_template("error.html", error="Forbidden: You can only view your own profile.")
 
         username = requested_user
     else:
@@ -69,12 +69,12 @@ def view_profile():
         except:
             file_hint = None
 
-    elif g.user == "EY_user123":
+    elif g.user == "ey_user123":
         try:
-            files = os.listdir("uploads/EY_user123")
+            files = os.listdir("uploads/ey_user123")
             if files:
-                files.sort(key=lambda f: os.path.getmtime(os.path.join("uploads/EY_user123", f)), reverse=True)
-                file_hint = f"EY_user123/{files[0]}"
+                files.sort(key=lambda f: os.path.getmtime(os.path.join("uploads/ey_user123", f)), reverse=True)
+                file_hint = f"ey_user123/{files[0]}"
         except:
             file_hint = None
 

@@ -1,24 +1,12 @@
-version: '3.8'
-
+version: '3'
 services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.flask  # renamed for clarity
+      dockerfile: Dockerfile.flask
     container_name: my_ctf_web
     ports:
       - "5000:5000"
     volumes:
       - ./uploads:/app/uploads
-    restart: unless-stopped
-
-  phpserver:
-    build:
-      context: .
-      dockerfile: Dockerfile.php
-    container_name: my_ctf_php
-    ports:
-      - "8080:80"
-    volumes:
-      - ./uploads:/var/www/html
     restart: unless-stopped
