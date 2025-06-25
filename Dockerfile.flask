@@ -22,6 +22,9 @@ RUN chown -R root:root /app
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Create logs directory and set permissions
+RUN mkdir -p /app/logs && chmod -R 777 /app/logs
+
 # Create upload folders and set permissions ONLY for uploads
 RUN mkdir -p /app/uploads/ey_user123 /app/uploads/guest /app/uploads/admin && \
     chown -R ey_user123:ey_user123 /app/uploads && \

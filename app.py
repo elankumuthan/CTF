@@ -1,5 +1,5 @@
 from flask import Flask, send_from_directory, g
-from routes import auth, upload, profile, comment, download
+from routes import auth, upload, profile, comment, download, honeypot
 import os
 
 app = Flask(__name__)
@@ -12,6 +12,7 @@ app.register_blueprint(upload.bp)
 app.register_blueprint(profile.bp)
 app.register_blueprint(comment.bp)
 app.register_blueprint(download.bp)
+app.register_blueprint(honeypot.bp)
 
 @app.route('/uploads/<user>/<filename>')
 def serve_user_file(user, filename):
