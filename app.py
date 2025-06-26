@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, g
+from flask import Flask, send_from_directory, g, Blueprint
 from routes import auth, upload, profile, comment, uploads, honeypot
 import os
 

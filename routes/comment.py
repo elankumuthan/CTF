@@ -38,7 +38,7 @@ def comment():
     try:
         conn = sqlite3.connect(COMMENTS_DB)
         c = conn.cursor()
-        c.execute("SELECT author, timestamp, message FROM comments ORDER BY id DESC")
+        c.execute("SELECT author, timestamp, message FROM comments ORDER BY id DESC LIMIT 25")
         rows = c.fetchall()
         conn.close()
 

@@ -15,7 +15,7 @@ services:
   ghost_admin:
     build:
       context: ./ghost_admin
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # Uses the Firefox+Selenium Dockerfile
     container_name: ghost_admin
     depends_on:
       - web
