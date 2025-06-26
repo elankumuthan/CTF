@@ -2,7 +2,7 @@ import sqlite3
 
 def clear_db():
     try:
-        conn = sqlite3.connect('users.db')
+        conn = sqlite3.connect('utils/users.db')
         c = conn.cursor()
 
         # Get all table names in the database

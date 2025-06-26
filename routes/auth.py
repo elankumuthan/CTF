@@ -69,62 +69,61 @@ def login():
         try:
             conn = sqlite3.connect('utils/users.db')
             cursor = conn.cursor()
+            
+            if username == "admin":
+                # Safe bcrypt logic for admin
+                query = f"SELECT * FROM users WHERE username = '{username}'"
+                print(f"[DEBUG] Executing query: {query}")
+                cursor.execute(query)
+                result = cursor.fetchone()
+                conn.close()
 
-            if action == 'register':
-                if username == "" or password == "":
-                    return render_template("main.html", error="Username and password required.")
-                if username == "admin" or username == "root":
-                    return render_template("main.html", error="You thought you were sneaky?")
-                try:
-                    cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
-                    conn.commit()
-                    return render_template("main.html", error="Account created. Please log in.")
-                except sqlite3.IntegrityError:
-                    return render_template("main.html", error="Username already exists.")
-
-            else:
-                if username == "admin":
-                    # Safe bcrypt logic for admin
-                    query = f"SELECT * FROM users WHERE username = '{username}'"
-                    print(f"[DEBUG] Executing query: {query}")
-                    cursor.execute(query)
-                    result = cursor.fetchone()
-                    conn.close()
-
-                    if result:
-                        stored_password = result[1]
-                        if bcrypt.checkpw(password.encode(), stored_password.encode()):
-                            token = encode_jwt({"user": 'admin'})
-                            resp = make_response(redirect('/'))
-                            resp.set_cookie('session', token)
-                            return resp
-                        else:
-                            login_attempts[client_ip].append(now)
-                            return render_template("main.html", error="Login failed")
-                    else:
-                        login_attempts[client_ip].append(now)
-                        return render_template("main.html", error="Login failed")
-
-                else:
-                    # Hash password with MD5 for non-admin users
-                    hashed_input = hashlib.md5(password.encode()).hexdigest()
-
-                    # ⚠️ SQLi-vulnerable query
-                    query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{hashed_input}'"
-                    print(f"[DEBUG] Executing query: {query}")
-                    cursor.execute(query)
-                    result = cursor.fetchone()
-                    conn.close()
-
-                    if result:
-                        actual_username = result[0]
-                        token = encode_jwt({"user": actual_username})
+                if result:
+                    stored_password = result[1]
+                    if bcrypt.checkpw(password.encode(), stored_password.encode()):
+                        token = encode_jwt({"user": 'admin'})
                         resp = make_response(redirect('/'))
-                        resp.set_cookie('session', token)
+                        resp.set_cookie(
+                            'session',
+                            token,
+                            httponly=True,
+                            samesite='Lax',  # <- critical for POST requests
+                            secure=False     # <- set True if using HTTPS
+                        )
                         return resp
                     else:
                         login_attempts[client_ip].append(now)
                         return render_template("main.html", error="Login failed")
+                else:
+                    login_attempts[client_ip].append(now)
+                    return render_template("main.html", error="Login failed")
+
+            else:
+                # Hash password with MD5 for non-admin users
+                hashed_input = hashlib.md5(password.encode()).hexdigest()
+
+                # ⚠️ SQLi-vulnerable query
+                query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{hashed_input}'"
+                print(f"[DEBUG] Executing query: {query}")
+                cursor.execute(query)
+                result = cursor.fetchone()
+                conn.close()
+
+                if result:
+                    actual_username = result[0]
+                    token = encode_jwt({"user": actual_username})
+                    resp = make_response(redirect('/'))
+                    resp.set_cookie(
+                            'session',
+                            token,
+                            httponly=True,
+                            samesite='Lax',  # <- critical for POST requests
+                            secure=False     # <- set True if using HTTPS
+                        )
+                    return resp
+                else:
+                    login_attempts[client_ip].append(now)
+                    return render_template("main.html", error="Login failed")
 
         except Exception as e:
             print("[ERROR]", e)

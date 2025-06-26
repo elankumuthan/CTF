@@ -15,7 +15,7 @@ def get_all_users():
     except:
         return []
 
-@bp.route('/')
+@bp.route('/', methods=['GET', 'POST'])
 @login_required
 def view_profile():
     users = get_all_users()
@@ -86,5 +86,40 @@ def view_profile():
                 file_hint = f"guest/{files[0]}"
         except:
             file_hint = None
+
+    
+    #Reset password logic
+    if request.method == 'POST':
+        if g.user != username:
+            return "Forbidden: You can only reset your own password.", 403
+
+        new_password = request.form.get('new_password', '').strip()
+        print(new_password)
+        if not new_password:
+            return render_template("error.html", error="Password cannot be empty.")
+
+        try:
+            print("a")
+            conn = sqlite3.connect('utils/users.db')
+            cursor = conn.cursor()
+
+            # Admin passwords are stored hashed with bcrypt
+            if g.user == "admin":
+                import bcrypt
+                hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+            else:
+                print("b")
+                import hashlib
+                hashed = hashlib.md5(new_password.encode()).hexdigest()
+
+
+            cursor.execute("UPDATE users SET password = ? WHERE username = ?", (hashed, username))
+            conn.commit()
+            conn.close()
+            print("c")
+            return render_template("profile.html", user={"name": username, "avatar": avatar}, file_hint=file_hint, user_id=user_id, success="Password updated.")
+        except Exception as e:
+            print(e)
+            return render_template("error.html", error="Error resetting password.")
 
     return render_template("profile.html", user={"name": username, "avatar": avatar}, file_hint=file_hint, user_id=user_id)

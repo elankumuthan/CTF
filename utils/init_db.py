@@ -2,6 +2,7 @@ import sqlite3
 import hashlib
 import bcrypt
 import os
+from datetime import datetime
 
 def hash_md5(plain_pw):
     return hashlib.md5(plain_pw.encode()).hexdigest()
@@ -9,8 +10,7 @@ def hash_md5(plain_pw):
 def hash_bcrypt(plain_pw):
     return bcrypt.hashpw(plain_pw.encode(), bcrypt.gensalt()).decode()
 
-def initialize_db():
-    conn = None
+def initialize_users_db():
     try:
         conn = sqlite3.connect('utils/users.db')
         c = conn.cursor()
@@ -19,24 +19,75 @@ def initialize_db():
         c.execute('CREATE TABLE users (username TEXT PRIMARY KEY, password TEXT)')
 
         users = [
-            ('admin', 'sup3rs3cur3p@ssw0rd'),
-            ('ey_user123', 'EYpass!!!@@@'),
+            ('3y_adm!n!strat0r', 'sup3rs3cur3p@ssw0rd'),
+            ('3y_us3r!23', 'EYpass!!!@@@'),
             ('guest', 'Gu3stp@ss!')
         ]
 
         for username, raw_password in users:
             if username == 'admin':
-                hashed = hash_bcrypt(raw_password)  # bcrypt for admin
+                hashed = hash_bcrypt(raw_password)
             else:
-                hashed = hash_md5(raw_password)      # md5 for normal user
+                hashed = hash_md5(raw_password)
             c.execute("INSERT INTO users VALUES (?, ?)", (username, hashed))
 
         conn.commit()
-        print("Database initialized with mixed hashing (bcrypt + md5).")
+        print("[✔] users.db initialized with mixed hash passwords")
     except Exception as e:
-        print(f"Error initializing database: {e}")
+        print(f"[!] Error initializing users.db: {e}")
     finally:
-        if conn:
-            conn.close()
+        conn.close()
 
-initialize_db()
+def initialize_comments_db():
+    try:
+        conn = sqlite3.connect('utils/comments.db')
+        c = conn.cursor()
+
+        c.execute('DROP TABLE IF EXISTS comments')
+        c.execute('''
+            CREATE TABLE comments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user TEXT,
+                author TEXT,
+                timestamp TEXT,
+                message TEXT
+            )
+        ''')
+
+        conn.commit()
+        print("[✔] comments.db initialized with table and test comment")
+    except Exception as e:
+        print(f"[!] Error initializing comments.db: {e}")
+    finally:
+        conn.close()
+
+def initialize_database_to_leak_db():
+    try:
+        conn = sqlite3.connect('utils/database_to_leak.db')
+        c = conn.cursor()
+
+        c.execute('DROP TABLE IF EXISTS users')
+        c.execute('CREATE TABLE users (username TEXT PRIMARY KEY, password TEXT)')
+
+        users = [
+            ('3y_us3r!23', 'EYpass!!!@@@'),
+            ('guest', 'Gu3stp@ss!')
+        ]
+
+        for username, raw_password in users:
+            if username == 'admin':
+                hashed = hash_bcrypt(raw_password)
+            else:
+                hashed = hash_md5(raw_password)
+            c.execute("INSERT INTO users VALUES (?, ?)", (username, hashed))
+
+        conn.commit()
+        print("[✔] database_to_leak.db initialized with mixed hash passwords")
+    except Exception as e:
+        print(f"[!] Error initializing database_to_leak.db: {e}")
+    finally:
+        conn.close()
+# Run both initializations
+initialize_users_db()
+initialize_comments_db()
+initialize_database_to_leak_db()

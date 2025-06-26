@@ -9,4 +9,14 @@ services:
       - "5000:5000"
     volumes:
       - ./uploads:/app/uploads
+      - ./profile_photo:/app/profile_photo
+    restart: unless-stopped
+
+  ghost_admin:
+    build:
+      context: ./ghost_admin
+      dockerfile: Dockerfile
+    container_name: ghost_admin
+    depends_on:
+      - web
     restart: unless-stopped

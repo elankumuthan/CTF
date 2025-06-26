@@ -1,3 +1,0 @@
-root:x:0:0:root:/root:/bin/bash
-ey_user:x:1002:1002::/home/ey_user:/bin/bash
-john:x:1001:1001::/home/john:/bin/false
