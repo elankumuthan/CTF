@@ -353,7 +353,7 @@
         <div class="error-title">Access Denied<span class="cursor">_</span></div>
         
         <div class="error-message">
-            <p><strong>FORBIDDEN:</strong> You can only view your own profile.</p>
+            <p><strong>{{ error.split(':')[0] }}:</strong> {{ error.split(':', 1)[1].strip() if ':' in error else error }}</p>
         </div>
         
         <div class="access-details">

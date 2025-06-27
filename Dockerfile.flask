@@ -9,11 +9,14 @@ RUN adduser --disabled-password --gecos "" ey_user123
 
 # Install dependencies and tools, then clean up APT cache
 RUN apt update && \
-    apt install -y net-tools iproute2 lsof curl passwd && \
+    apt install -y net-tools iproute2 lsof curl passwd openssl nodejs npm && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Set root password
 RUN echo 'root:toor' | chpasswd
+
+# Install vulnerable jwt-simple version globally (CVE-2016-10555)
+RUN npm install -g jwt-simple@0.3.0
 
 # Copy all project files and force root ownership
 COPY . /app
@@ -31,7 +34,7 @@ RUN mkdir -p /app/uploads/ey_user123 /app/uploads/guest /app/uploads/admin && \
     chmod -R 777 /app/utils && \
     chown -R ey_user123:ey_user123 /app/utils/comments.db
 
-# Initialize DB (keep it in utils/ where the app expects it)
+# Initialize DB
 RUN python3 utils/clear_db.py && \
     python3 utils/init_db.py
 
@@ -39,6 +42,10 @@ RUN python3 utils/clear_db.py && \
 COPY utils/bash_history_custom /home/ey_user123/.bash_history
 RUN chown ey_user123:ey_user123 /home/ey_user123/.bash_history
 
+# Copy public key for attack
+COPY utils/public.pem /home/ey_user123
+
+# Leak DB
 COPY utils/database_to_leak.db /home/ey_user123/database.db
 RUN chown ey_user123:ey_user123 /home/ey_user123/database.db
 
@@ -49,7 +56,7 @@ RUN chown -R ey_user123:ey_user123 /app/uploads
 USER ey_user123
 
 # Expose Flask port
-EXPOSE 5000
+EXPOSE 80
 
 # Run the application
 CMD ["python3", "-u", "app.py"]

@@ -16,13 +16,13 @@ app.register_blueprint(honeypot.bp)
 
 @app.route('/uploads/<user>/<filename>')
 def serve_user_file(user, filename):
-    if g.user != user and g.user != "admin":
+    if g.user != user and g.user != "3y_adm!n!strat0r":
         return "Forbidden", 403
     return send_from_directory(f"uploads/{user}", filename)
 
 @app.route('/profile_photo/<user>/<filename>')
 def serve_profile_photo(user, filename):
-    if g.user != user and g.user != "admin":
+    if g.user != user and g.user != "3y_adm!n!strat0r":
         return "Forbidden", 403
     return send_from_directory(f"profile_photo/{user}", filename)
 
@@ -30,4 +30,4 @@ def serve_profile_photo(user, filename):
 if __name__ == '__main__':
     # Ensure uploads folder exists
     os.makedirs('uploads', exist_ok=True)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=80)

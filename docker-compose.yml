@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile.flask
     container_name: my_ctf_web
     ports:
-      - "5000:5000"
+      - "80:80"
     volumes:
       - ./uploads:/app/uploads
       - ./profile_photo:/app/profile_photo
@@ -15,8 +15,22 @@ services:
   ghost_admin:
     build:
       context: ./ghost_admin
-      dockerfile: Dockerfile  # Uses the Firefox+Selenium Dockerfile
+      dockerfile: Dockerfile
     container_name: ghost_admin
     depends_on:
       - web
+    restart: unless-stopped
+
+  decoy:
+    image: alpine:latest
+    container_name: decoy_ports
+    command: >
+      sh -c "
+        apk add --no-cache socat &&
+        echo 'OK IMAP4 ready' | socat TCP-LISTEN:143,fork -
+        & echo 'HTTP/1.1 200 OK\r\n\r\nFake Web Server' | socat TCP-LISTEN:8000,fork -
+      "
+    ports:
+      - "143:143"
+      - "8000:8000"
     restart: unless-stopped

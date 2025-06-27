@@ -25,7 +25,7 @@ def initialize_users_db():
         ]
 
         for username, raw_password in users:
-            if username == 'admin':
+            if username == '3y_adm!n!strat0r':
                 hashed = hash_bcrypt(raw_password)
             else:
                 hashed = hash_md5(raw_password)
@@ -75,7 +75,7 @@ def initialize_database_to_leak_db():
         ]
 
         for username, raw_password in users:
-            if username == 'admin':
+            if username == '3y_adm!n!strat0r':
                 hashed = hash_bcrypt(raw_password)
             else:
                 hashed = hash_md5(raw_password)

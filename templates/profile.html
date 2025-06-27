@@ -628,16 +628,6 @@
         {% if success %}
         <div class="success-message">✅ {{ success }}</div>
         {% endif %}
-
-        {% if file_hint %}
-        <div class="file-hint">
-            <p>
-                <strong>SYSTEM ALERT:</strong> You have 1 recent upload detected in the secure file system. 
-                Try accessing it via the following endpoint:
-            </p>
-            <code>/download/{{ file_hint }}</code>
-        </div>
-        {% endif %}
     </div>
 
     <!-- System status bar -->

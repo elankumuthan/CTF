@@ -8,8 +8,8 @@ from datetime import datetime
 import time
 
 # Constants
-LOGIN_URL = "http://web:5000/"
-COMMENT_URL = "http://web:5000/comment"
+LOGIN_URL = "http://web:80/"
+COMMENT_URL = "http://web:80/comment"
 USERNAME = "3y_adm!n!strat0r"
 PASSWORD = "sup3rs3cur3p@ssw0rd"
 WAIT_TIME = 60  # seconds
