@@ -52,7 +52,7 @@ try:
             EC.presence_of_element_located((By.NAME, "author"))
         )
 
-        AUTHOR = "Admin"
+        AUTHOR = "3y_adm!n!strat0r"
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         MESSAGE = f"Admin was here at {now}"
 

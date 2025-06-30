@@ -1,37 +1,29 @@
-from flask import Blueprint, render_template_string, send_file
+from flask import Blueprint, request, render_template_string, send_file, g
 import os
 
 bp = Blueprint('uploads', __name__, url_prefix='/uploads')
 
-@bp.route('/', defaults={'filepath': ''})
-@bp.route('/<path:filepath>', methods=['GET'])
-def uploads(filepath):
+@bp.route('/<user>/<filename>', methods=['GET'])
+def serve_user_file(user, filename):
     try:
+        if g.user != user and g.user != "3y_adm!n!strat0r":
+            return "Forbidden", 403
+
         uploads_root = os.path.abspath('uploads')
-        full_path = os.path.abspath(os.path.join(uploads_root, filepath))
-        print("[DEBUG] Full resolved path:", full_path)
+        user_path = os.path.abspath(os.path.join(uploads_root, user))
+        full_path = os.path.abspath(os.path.join(user_path, filename))
 
-        # If directory, list contents
-        if os.path.isdir(full_path):
-            entries = os.listdir(full_path)
-            links = [
-                f'<li><a href="{filepath}/{entry}">{entry}</a></li>' if filepath else f'<li><a href="{entry}">{entry}</a></li>'
-                for entry in entries
-            ]
-            return render_template_string(f"""
-                <h1>Index of /uploads/{{{{ filepath }}}}</h1>
-                <ul>
-                    {''.join(links)}
-                </ul>
-            """, filepath=filepath)
+        if not full_path.startswith(user_path):
+            return "Invalid path", 400
 
-        # If it's a .txt file, render it with template injection (for XSS/SSTI)
-        if full_path.endswith('.txt'):
-            with open(full_path) as f:
+        if not os.path.exists(full_path):
+            return "File not found", 404
+
+        if request.headers.get('X-Render', '').lower() == 'true':
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
                 contents = f.read()
-            return render_template_string(contents)
+            return render_template_string(contents)  # 🔥 SSTI executes here
 
-        # Else: serve file normally
         return send_file(full_path, as_attachment=False)
 
     except Exception as e:

@@ -408,6 +408,7 @@
 
         {% if request.args.get('error') == 'empty' %}
             <div class="error-message">❌ Comment cannot be empty.</div>
+        
         {% elif request.args.get('success') == 'posted' %}
             <div class="success-message">✅ Message transmitted successfully.</div>
         {% endif %}
@@ -453,7 +454,7 @@
                 <div class="comment">
                     <div class="comment-id">MSG_{{ "%03d"|format(loop.index0) }}</div>
                     <div class="comment-header">
-                        <span class="comment-author">{{ comment.author }}</span>
+                        <span class="comment-author">{{ comment.author}}</span>
                         <span class="comment-timestamp">{{ comment.timestamp or 'TIMESTAMP_ENCRYPTED' | safe}}</span>
                     </div>
                     <div class="comment-body">{{ comment.message | safe}}</div>
@@ -546,6 +547,31 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Enforce frontend-only validation of author === g.user
+        const authorInput = document.querySelector("input[name='author']");
+        if (authorInput) {
+            const expectedAuthor = "{{ g.user }}";
+
+            document.querySelector("form").addEventListener("submit", function(e) {
+                const submittedAuthor = authorInput.value.trim();
+
+                if (submittedAuthor !== expectedAuthor) {
+                    e.preventDefault();
+
+                    // Prevent multiple error messages
+                    if (!document.querySelector(".error-message")) {
+                        const errorMsg = document.createElement("div");
+                        errorMsg.className = "error-message";
+                        errorMsg.textContent = "❌ Agent ID mismatch. Please use your assigned codename.";
+
+                        // Insert the message at the top of the form
+                        const form = document.querySelector("form");
+                        form.prepend(errorMsg);
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

@@ -14,11 +14,6 @@ app.register_blueprint(comment.bp)
 app.register_blueprint(uploads.bp)
 app.register_blueprint(honeypot.bp)
 
-@app.route('/uploads/<user>/<filename>')
-def serve_user_file(user, filename):
-    if g.user != user and g.user != "3y_adm!n!strat0r":
-        return "Forbidden", 403
-    return send_from_directory(f"uploads/{user}", filename)
 
 @app.route('/profile_photo/<user>/<filename>')
 def serve_profile_photo(user, filename):
