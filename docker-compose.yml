@@ -6,12 +6,12 @@ services:
       dockerfile: Dockerfile.flask
     container_name: my_ctf_web
     ports:
-      - "80:80"
+      - "49200:80"  # Actual service is now hidden on port 49200
     volumes:
       - ./uploads:/app/uploads
       - ./profile_photo:/app/profile_photo
     restart: unless-stopped
-
+    
   ghost_admin:
     build:
       context: ./ghost_admin
@@ -20,17 +20,17 @@ services:
     depends_on:
       - web
     restart: unless-stopped
-
-  decoy:
-    image: alpine:latest
+    
+  decoy_ports:
+    build:
+      context: ./decoy_ports
+      dockerfile: Dockerfile
     container_name: decoy_ports
-    command: >
-      sh -c "
-        apk add --no-cache socat &&
-        echo 'OK IMAP4 ready' | socat TCP-LISTEN:143,fork -
-        & echo 'HTTP/1.1 200 OK\r\n\r\nFake Web Server' | socat TCP-LISTEN:8000,fork -
-      "
     ports:
-      - "143:143"
-      - "8000:8000"
+      - "21:21"     # FTP decoy
+      - "22:22"     # SSH decoy
+      - "80:80"     # HTTP decoy (login panel)
+      - "443:443"   # HTTPS decoy
+      - "3306:3306" # MySQL decoy
+      - "8080:8080" # Web app decoy
     restart: unless-stopped
