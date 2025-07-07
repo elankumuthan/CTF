@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Access Denied - #Tryharder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Monaco, monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #1a4d1a 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #1a1a4d 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Matrix-style background effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Navbar styling with hacker theme */
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 15px;
+            border-bottom: 2px solid #ff0000;
+            box-shadow: 0 2px 20px rgba(255, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar::before {
+            content: "UNAUTHORIZED ACCESS DETECTED";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #ff0000;
+            letter-spacing: 2px;
+            animation: warning-blink 1s infinite;
+        }
+
+        @keyframes warning-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .navbar a {
+            margin-right: 25px;
+            text-decoration: none;
+            color: #ff0000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            text-decoration: none;
+            border: 1px solid #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Main content container */
+        .main-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 0, 0.3),
+                inset 0 0 30px rgba(255, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .main-container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #cc0000, #880000, #ff0000);
+            border-radius: 10px;
+            z-index: -1;
+            animation: border-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes border-glow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .access-denied {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .access-denied h1 {
+            color: #ff0000;
+            font-size: 3em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #ff0000;
+            animation: pulse-glow 1.5s ease-in-out infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 10px #ff0000; }
+            100% { text-shadow: 0 0 30px #ff0000, 0 0 40px #ff0000; }
+        }
+
+        .tryharder {
+            font-size: 2.5em;
+            color: #00ff00;
+            text-shadow: 0 0 15px #00ff00;
+            animation: typing 3s steps(10) infinite;
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            border-right: 3px solid #00ff00;
+            width: 12ch;
+        }
+
+        @keyframes typing {
+            0% { width: 0; }
+            50% { width: 12ch; }
+            100% { width: 0; }
+        }
+
+        .challenge-message {
+            color: #ffff00;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 30px 0;
+            animation: flicker 2s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .hint-box {
+            background: rgba(255, 255, 0, 0.1);
+            border-left: 3px solid #ffff00;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.9em;
+            color: #ffff00;
+            position: relative;
+        }
+
+        .hint-box::before {
+            content: "/* HINT */";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #0a0a0a;
+            padding: 0 5px;
+            font-size: 0.7em;
+            color: #888;
+        }
+
+        .secret-button {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Monaco, monospace;
+            padding: 15px 30px;
+            margin: 20px;
+        }
+
+        .secret-button:hover {
+            background: linear-gradient(45deg, #cc0000, #ff0000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .hidden-rick {
+            position: absolute;
+            top: -1000px;
+            left: -1000px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+
+        /* Terminal-style cursor */
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Scan line effect */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            animation: scan 3s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Matrix background effect -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Scan line effect -->
+    <div class="scan-line"></div>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+    </div>
+    
+    <div class="main-container">
+        <div class="access-denied">
+            <h1 class="glitch">ACCESS DENIED</h1>
+            <div class="tryharder">#Tryharder<span class="cursor">_</span></div>
+        </div>
+        
+        <div class="challenge-message">
+            <p>You think you can break in? Think again, script kiddie!</p>
+        </div>
+        
+        <div class="hint-box">
+            <div style="color: #888; font-style: italic;">// Not as easy as you think!</div>
+            <div style="color: #ffff00; font-weight: bold;">// The answers you seek are closer than you think</div>
+            <div style="color: #888; font-style: italic;">// Keep going!!!</div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="secret-button" onclick="rickRoll()">NEVER GONNA</button>
+        </div>
+    </div>
+
+    <!-- Hidden Rick Roll audio -->
+    <audio id="rickRollAudio" class="hidden-rick" preload="auto" loop>
+        <!-- Replace with your actual MP3 file URL -->
+        <source src="/static/rickroll.mp3" type="audio/mpeg">
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
+        <!-- Fallback for browsers that don't support the audio element -->
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Create matrix rain effect
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 60; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
+            }
+        }
+
+
+        // Rick Roll music variables
+        let audioContext;
+        let isPlaying = false;
+        let currentOscillators = [];
+
+        // Initialize Web Audio API
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioContext;
+        }
+
+        // Play a note using Web Audio API
+        function playNote(frequency, duration, startTime = 0) {
+            const ctx = initAudio();
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + startTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, ctx.currentTime + startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + startTime + duration);
+            
+            oscillator.start(ctx.currentTime + startTime);
+            oscillator.stop(ctx.currentTime + startTime + duration);
+            
+            currentOscillators.push(oscillator);
+            
+            return oscillator;
+        }
+
+        // Stop all playing notes
+        function stopAllNotes() {
+            currentOscillators.forEach(osc => {
+                try {
+                    osc.stop();
+                } catch (e) {
+                    // Oscillator might already be stopped
+                }
+            });
+            currentOscillators = [];
+        }
+
+        // Rick Roll melody (simplified version)
+        function playRickRollMelody() {
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            const ctx = initAudio();
+            
+            // Note frequencies (in Hz)
+            const notes = {
+                'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+                'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25,
+                'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99
+            };
+            
+            // Rick Roll melody pattern (simplified)
+            const melody = [
+                {note: 'G4', duration: 0.5}, {note: 'A4', duration: 0.5},
+                {note: 'C5', duration: 0.5}, {note: 'A4', duration: 0.5},
+                {note: 'E4', duration: 1.0}, {note: 'E4', duration: 1.0},
+                {note: 'G4', duration: 0.5}, {note: 'A4', duration: 0.5},
+                {note: 'C5', duration: 0.5}, {note: 'A4', duration: 0.5},
+                {note: 'D5', duration: 1.0}, {note: 'D5', duration: 1.0},
+                {note: 'C5', duration: 0.5}, {note: 'B4', duration: 0.5},
+                {note: 'G4', duration: 1.0}, {note: 'A4', duration: 1.0},
+                {note: 'G4', duration: 0.5}, {note: 'A4', duration: 0.5},
+                {note: 'C5', duration: 0.5}, {note: 'A4', duration: 0.5},
+                {note: 'E4', duration: 1.0}, {note: 'E4', duration: 1.0}
+            ];
+            
+            let currentTime = 0;
+            
+            melody.forEach((item, index) => {
+                playNote(notes[item.note], item.duration, currentTime);
+                currentTime += item.duration;
+            });
+            
+            // Loop the melody
+            setTimeout(() => {
+                isPlaying = false;
+                if (document.getElementById('rickRollPlaying')) {
+                    playRickRollMelody(); // Continue playing
+                }
+            }, currentTime * 1000);
+        }
+
+        // Rick Roll function with actual MP3 audio
+        function rickRoll() {
+            const audio = document.getElementById('rickRollAudio');
+            
+            // Play the actual MP3 audio
+            if (audio) {
+                audio.currentTime = 0; // Reset to beginning
+                audio.play().then(() => {
+                    console.log('🎵 Rick Roll audio started playing!');
+                }).catch((error) => {
+                    console.log('Audio play failed:', error);
+                    // Fallback to Web Audio API if MP3 fails
+                    playRickRollMelody();
+                });
+            }
+            
+            // Add visual indicator that music is playing
+            const indicator = document.createElement('div');
+            indicator.id = 'rickRollPlaying';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: rgba(255, 0, 0, 0.9);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                z-index: 1000;
+                animation: bounce 1s infinite;
+                cursor: pointer;
+            `;
+            indicator.innerHTML = '🎵 RICK ROLLING... Click to stop';
+            indicator.onclick = function() {
+                audio.pause();
+                audio.currentTime = 0;
+                stopAllNotes();
+                isPlaying = false;
+                this.remove();
+            };
+            document.body.appendChild(indicator);
+            
+            // Create a popup with Rick Roll lyrics
+            const rickRollWindow = window.open('', 'rickroll', 'width=500,height=400');
+            rickRollWindow.document.write(`
+                <html>
+                <head>
+                    <title>Never Gonna Give You Up!</title>
+                    <style>
+                        body { 
+                            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+                            font-family: 'Courier New', monospace;
+                            text-align: center;
+                            padding: 50px;
+                            color: white;
+                            animation: spin 2s linear infinite;
+                        }
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                        @keyframes bounce {
+                            0%, 100% { transform: translateY(0); }
+                            50% { transform: translateY(-10px); }
+                        }
+                        h1 { font-size: 2em; margin-bottom: 20px; }
+                        p { font-size: 1.2em; margin: 10px 0; }
+                        .music-note { animation: bounce 0.5s infinite; }
+                    </style>
+                </head>
+                <body>
+                    <h1>🎵 RICK ROLLED! 🎵</h1>
+                    <div class="music-note">♪ ♫ ♪ ♫ ♪ ♫ ♪</div>
+                    <p>Never gonna give you up</p>
+                    <p>Never gonna let you down</p>
+                    <p>Never gonna run around and desert you</p>
+                    <p>Never gonna make you cry</p>
+                    <p>Never gonna say goodbye</p>
+                    <p>Never gonna tell a lie and hurt you</p>
+                    <br>
+                    <p>🎉 You've been Rick Rolled! 🎉</p>
+                    <p>But hey, at least you're trying harder! 😄</p>
+                    <p><small>🎵 Real MP3 audio playing! 🎵</small></p>
+                </body>
+                </html>
+            `);
+            
+            // Console easter egg
+            console.log(`
+    ██████╗ ██╗ ██████╗██╗  ██╗    ██████╗  ██████╗ ██╗     ██╗     ███████╗██████╗ 
+    ██╔══██╗██║██╔════╝██║ ██╔╝    ██╔══██╗██╔═══██╗██║     ██║     ██╔════╝██╔══██╗
+    ██████╔╝██║██║     █████╔╝     ██████╔╝██║   ██║██║     ██║     █████╗  ██║  ██║
+    ██╔══██╗██║██║     ██╔═██╗     ██╔══██╗██║   ██║██║     ██║     ██╔══╝  ██║  ██║
+    ██║  ██║██║╚██████╗██║  ██╗    ██║  ██║╚██████╔╝███████╗███████╗███████╗██████╔╝
+    ╚═╝  ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝╚═════╝ 
+    
+    🎵 Never gonna give you up, never gonna let you down! 🎵
+    🎶 Real MP3 audio is now playing! 🎶
+    Bonus Console Flag: CTF{c0ns0l3_c0wb0y_r1ck_r0ll3d}
+            `);
+        }
+
+        // Initialize effects
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            
+        // Refresh matrix effect periodically
+        setInterval(() => {
+            const matrixBg = document.getElementById('matrixBg');
+            if (matrixBg.children.length < 60) {
+                const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrixBg.appendChild(char);
+            }
+        }, 1000);
+
+        // Prevent right-click (just kidding, it still works!)
+        document.addEventListener('contextmenu', function(e) {
+            console.log('That\'s the spirit! Keep digging!');
+            // Don't actually prevent it - we want them to inspect!
+        });
+    });
+    </script>
+</body>
+</html>

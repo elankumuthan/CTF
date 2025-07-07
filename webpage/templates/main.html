@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - my_ctf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Monaco, monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #1a4d1a 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #1a1a4d 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Matrix-style background effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Navbar styling with hacker theme */
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 15px;
+            border-bottom: 2px solid #00ff00;
+            box-shadow: 0 2px 20px rgba(0, 255, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar::before {
+            content: "SECURE ACCESS TERMINAL";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .navbar a {
+            margin-right: 25px;
+            text-decoration: none;
+            color: #00ff00;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            text-decoration: none;
+            border: 1px solid #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Main content container */
+        .main-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 0, 0.3),
+                inset 0 0 30px rgba(0, 255, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .main-container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, #00cc00, #008800, #00ff00);
+            border-radius: 10px;
+            z-index: -1;
+            animation: border-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes border-glow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        h2 {
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px #00ff00;
+            animation: pulse-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 10px #00ff00; }
+            100% { text-shadow: 0 0 30px #00ff00, 0 0 40px #00ff00; }
+        }
+
+        .error-message {
+            color: #ff3333 !important;
+            background: rgba(255, 51, 51, 0.1);
+            border: 1px solid #ff3333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: error-flash 0.5s ease-in-out 3;
+        }
+
+        @keyframes error-flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        form {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            color: #00ff00;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #00ff00;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        .debug-comment {
+            background: rgba(255, 255, 0, 0.1);
+            border-left: 3px solid #ffff00;
+            padding: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.85em;
+            color: #ffff00;
+            position: relative;
+        }
+
+        .debug-comment::before {
+            content: "/* DEBUG INFO */";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #0a0a0a;
+            padding: 0 5px;
+            font-size: 0.7em;
+            color: #888;
+        }
+
+        .debug-comment .comment-line {
+            color: #888;
+            font-style: italic;
+        }
+
+        .debug-comment .user-hint {
+            color: #ffff00;
+            font-weight: bold;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', Monaco, monospace;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #00cc00, #00ff00);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Welcome message styling */
+        .welcome-message {
+            text-align: center;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Terminal-style cursor */
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Scan line effect */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 3s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix background effect -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Scan line effect -->
+    <div class="scan-line"></div>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/upload">Upload</a>
+        <a href="/profile">Profile</a>
+        <a href="/comment">Comment</a>
+        {% if g.user %}
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% endif %}
+    </div>
+    
+    <div class="main-container">
+        {% if g.user %}
+            <div class="welcome-message">
+                <h2>Access Granted, {{ g.user }}!<span class="cursor">_</span></h2>
+                <p>You are now connected to the secure CTF environment.</p>
+            </div>
+        {% else %}
+            <h2>Security Login<span class="cursor">_</span></h2>
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+            <form method="POST">
+                <label>Username:</label><br>
+                <input name="username" placeholder="Enter access credentials"><br>
+                
+                <div class="debug-comment">
+                    <div class="comment-line"><!-- TODO: Remove debug SQL output before launch --></div>
+                    <div class="user-hint"><!-- USER: guest--></div>
+                </div>
+                
+                <label>Password:</label><br>
+                <input name="password" type="password" placeholder="Enter security key"><br><br>
+                <button type="submit" name="action" value="login">Initialize Access</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <script>
+        // Create matrix rain effect
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
+            }
+        }
+
+        // Add typing sound effect simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Visual feedback for typing
+                    this.style.borderColor = '#00ff00';
+                    setTimeout(() => {
+                        this.style.borderColor = '#333';
+                    }, 200);
+                });
+            });
+
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const button = this.querySelector('button');
+                    button.textContent = 'AUTHENTICATING...';
+                    button.style.background = 'linear-gradient(45deg, #ffaa00, #ff8800)';
+                });
+            }
+        });
+
+        // Refresh matrix effect periodically
+        setInterval(() => {
+            const matrixBg = document.getElementById('matrixBg');
+            if (matrixBg.children.length < 50) {
+                const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';<!-- Debug comment styled as actual code -->
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrixBg.appendChild(char);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

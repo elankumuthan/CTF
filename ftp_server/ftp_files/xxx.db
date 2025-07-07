@@ -1,0 +1,3 @@
+SQLite format 3
+CREATE TABLE users(id INT, name TEXT, password TEXT);
+INSERT INTO users VALUES(1, 'admin', 'notarealhash');

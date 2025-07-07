@@ -5,34 +5,40 @@ This project runs a multi-service Capture-The-Flag (CTF) web environment using D
 ## Getting Started
 
 ### 1. Clone the Repository
-
 ```bash
 git clone https://github.com/your-repo-name/ctf-docker.git
 cd ctf-docker
 ```
 
-This command builds all services and starts them using Docker Compose.
+### 2. Enable Stealth Mode (Recommended)
+First, make your containers invisible to basic scans:
+```bash
+chmod +x harden_docker.sh
+./harden_docker.sh
+```
 
-### 2. Start the Containers
-
+### 3. Start the CTF Environment
 ```bash
 docker-compose up --build
 ```
 
 ## Shut Down
 
-To stop all running containers:
-
+### 1. Stop the CTF Environment
 ```bash
 docker-compose down
 ```
 
-To stop containers and remove all associated volumes:
+### 2. Disable Stealth Mode
+```bash
+./unharden_docker.sh
+```
 
+### Optional: Remove All Data
+To completely remove containers and volumes:
 ```bash
 docker-compose down -v
 ```
-
 
 ## Prerequisites
 
@@ -40,11 +46,21 @@ docker-compose down -v
 - Docker Compose
 - socat (for decoy services)
 
+## What's Included
+
+- **Stealth Protection**: Blocks ping and port scans to hide your containers
+- **Decoy Services**: Intentionally designed to waste attackers' time
+- **Hidden Vulnerabilities**: CTF-style challenges and misdirection
+
+## Security Warning
+
+This environment contains intentionally vulnerable services. Only run in isolated environments and never expose to public networks.
+
 ## Notes
 
-- This environment is designed for educational CTF purposes
-- Decoy services are intentionally designed to waste attackers' time
-- Make sure to run this in a controlled environment only
+- Run stealth mode before starting containers for maximum effect
+- Always disable stealth mode when finished to avoid affecting other services
+- This environment is designed for educational CTF purposes only
 
 ## Security Warning
 

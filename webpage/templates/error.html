@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Access Denied - my_ctf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Monaco, monospace;
+            background: #0a0a0a;
+            color: #ff3333;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #4d1a1a 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #1a1a4d 0%, transparent 50%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Matrix-style background effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #ff3333;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Navbar styling with hacker theme */
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 15px;
+            border-bottom: 2px solid #ff3333;
+            box-shadow: 0 2px 20px rgba(255, 51, 51, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar::before {
+            content: "SECURITY ALERT - ACCESS DENIED";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .navbar a {
+            margin-right: 25px;
+            text-decoration: none;
+            color: #00ff00;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            text-decoration: none;
+            border: 1px solid #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Main content container */
+        .main-container {
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff3333;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 30px rgba(255, 51, 51, 0.4),
+                inset 0 0 30px rgba(255, 51, 51, 0.1);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        .main-container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff3333, #ff6666, #ff3333, #cc0000);
+            border-radius: 10px;
+            z-index: -1;
+            animation: border-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes border-glow {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* Error code display */
+        .error-code {
+            font-size: 8em;
+            font-weight: bold;
+            color: #ff3333;
+            text-shadow: 0 0 30px #ff3333;
+            margin-bottom: 20px;
+            animation: error-pulse 1s ease-in-out infinite alternate;
+            line-height: 1;
+        }
+
+        @keyframes error-pulse {
+            0% { 
+                text-shadow: 0 0 20px #ff3333;
+                transform: scale(1);
+            }
+            100% { 
+                text-shadow: 0 0 50px #ff3333, 0 0 70px #ff3333;
+                transform: scale(1.05);
+            }
+        }
+
+        .error-title {
+            color: #ff3333;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #ff3333;
+        }
+
+        .error-message {
+            background: rgba(255, 51, 51, 0.1);
+            border: 1px solid #ff3333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .error-message::before {
+            content: "SECURITY VIOLATION";
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #0a0a0a;
+            padding: 0 8px;
+            font-size: 0.7em;
+            color: #ff3333;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .error-message p {
+            color: #ff6666;
+            font-size: 1.1em;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Access details */
+        .access-details {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .access-details::before {
+            content: "ACCESS LOG";
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #0a0a0a;
+            padding: 0 8px;
+            font-size: 0.7em;
+            color: #888;
+            letter-spacing: 2px;
+        }
+
+        .access-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .access-details li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .access-details li:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #888;
+            text-transform: uppercase;
+            font-size: 0.8em;
+        }
+
+        .detail-value {
+            color: #ff6666;
+            font-weight: bold;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 0 10px;
+            border: 2px solid #00ff00;
+            background: transparent;
+            color: #00ff00;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Courier New', Monaco, monospace;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .btn.secondary {
+            border-color: #666;
+            color: #666;
+        }
+
+        .btn.secondary:hover {
+            border-color: #999;
+            color: #999;
+            background: rgba(153, 153, 153, 0.1);
+            box-shadow: 0 0 15px rgba(153, 153, 153, 0.3);
+        }
+
+        /* Terminal-style cursor */
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Glitch effect */
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Scan line effect */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff3333, transparent);
+            animation: scan 2s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* Warning indicators */
+        .warning-icon {
+            font-size: 3em;
+            color: #ff3333;
+            margin-bottom: 20px;
+            animation: warning-flash 1s infinite;
+        }
+
+        @keyframes warning-flash {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix background effect -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Scan line effect -->
+    <div class="scan-line"></div>
+
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/upload">Upload</a>
+        <a href="/profile">Profile</a>
+        <a href="/comment">Comment</a>
+        {% if g.user %}
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% endif %}
+    </div>
+    
+    <div class="main-container">
+        <div class="warning-icon">⚠</div>
+        <div class="error-code glitch">403</div>
+        <div class="error-title">Access Denied<span class="cursor">_</span></div>
+        
+        <div class="error-message">
+            <p><strong>{{ error.split(':')[0] }}:</strong> {{ error.split(':', 1)[1].strip() if ':' in error else error }}</p>
+        </div>
+        
+        <div class="access-details">
+            <ul>
+                <li>
+                    <span class="detail-label">Current User:</span>
+                    <span class="detail-value">{{ g.user if g.user else 'GUEST' }}</span>
+                </li>
+                <li>
+                    <span class="detail-label">Requested Resource:</span>
+                    <span class="detail-value">CLASSIFIED PROFILE</span>
+                </li>
+                <li>
+                    <span class="detail-label">Access Level:</span>
+                    <span class="detail-value">INSUFFICIENT</span>
+                </li>
+                <li>
+                    <span class="detail-label">Security Status:</span>
+                    <span class="detail-value">VIOLATION DETECTED</span>
+                </li>
+                <li>
+                    <span class="detail-label">Timestamp:</span>
+                    <span class="detail-value" id="timestamp">LOADING...</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="/profile" class="btn primary">Return to Your Profile</a>
+            <a href="/" class="btn secondary">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Create matrix rain effect with red theme
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const chars = '01ACCESSDENIEDVIOLATIONSECURITYERROR403FORBIDDENALERT';
+            
+            for (let i = 0; i < 40; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
+            }
+        }
+
+        // Initialize effects
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            
+            // Set current timestamp
+            const now = new Date();
+            const timestamp = now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+            document.getElementById('timestamp').textContent = timestamp;
+            
+            // Add some glitch effects periodically
+            setInterval(() => {
+                const errorCode = document.querySelector('.error-code');
+                errorCode.classList.add('glitch');
+                setTimeout(() => {
+                    errorCode.classList.remove('glitch');
+                }, 300);
+            }, 3000);
+        });
+
+        // Refresh matrix effect periodically
+        setInterval(() => {
+            const matrixBg = document.getElementById('matrixBg');
+            if (matrixBg.children.length < 40) {
+                const chars = '01ACCESSDENIEDVIOLATIONSECURITYERROR403FORBIDDENALERT';
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrixBg.appendChild(char);
+            }
+        }, 1000);
+
+        // Security alert sound simulation
+        function playSecurityAlert() {
+            // Visual feedback only since we can't play actual sounds
+            const container = document.querySelector('.main-container');
+            container.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                container.style.transform = 'scale(1)';
+            }, 100);
+        }
+
+        // Trigger alert every few seconds
+        setInterval(playSecurityAlert, 5000);
+    </script>
+</body>
+</html>

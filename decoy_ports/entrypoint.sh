@@ -2,10 +2,6 @@
 
 echo "Starting CTF decoy services..."
 
-# FTP (21) - Interactive honeypot that wastes time
-socat TCP-LISTEN:21,fork,reuseaddr EXEC:"/opt/services/ftp_decoy.sh" &
-echo "FTP decoy started on port 21"
-
 # SSH (22) - Slow connection that hangs then disconnects
 socat TCP-LISTEN:22,fork,reuseaddr EXEC:"/opt/services/ssh_decoy.sh" &
 echo "SSH decoy started on port 22"

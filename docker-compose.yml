@@ -2,16 +2,16 @@ version: '3'
 services:
   web:
     build:
-      context: .
-      dockerfile: Dockerfile.flask
+      context: ./webpage
+      dockerfile: Dockerfile
     container_name: my_ctf_web
     ports:
-      - "49200:80"  # Actual service is now hidden on port 49200
+      - "49200:80"
     volumes:
-      - ./uploads:/app/uploads
-      - ./profile_photo:/app/profile_photo
+      - ./webpage/uploads:/app/uploads
+      - ./webpage/profile_photo:/app/profile_photo
     restart: unless-stopped
-    
+
   ghost_admin:
     build:
       context: ./ghost_admin
@@ -20,17 +20,27 @@ services:
     depends_on:
       - web
     restart: unless-stopped
-    
+
+  ftp:
+    build:
+      context: ./ftp_server
+      dockerfile: Dockerfile
+    container_name: legit_ftp
+    ports:
+      - "21:21"
+      - "20:20"
+      - "10000-10100:10000-10100"
+    restart: unless-stopped
+
   decoy_ports:
     build:
       context: ./decoy_ports
       dockerfile: Dockerfile
     container_name: decoy_ports
     ports:
-      - "21:21"     # FTP decoy
-      - "22:22"     # SSH decoy
-      - "80:80"     # HTTP decoy (login panel)
-      - "443:443"   # HTTPS decoy
-      - "3306:3306" # MySQL decoy
-      - "8080:8080" # Web app decoy
+      - "22:22"
+      - "80:80"
+      - "443:443"
+      - "3306:3306"
+      - "8080:8080"
     restart: unless-stopped

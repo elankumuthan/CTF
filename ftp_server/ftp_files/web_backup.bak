@@ -1,0 +1,3 @@
+-- SQLITE BACKUP FILE START --
+TABLE users (id, username, password_hash)
+TABLE flags (id, flag_value)
