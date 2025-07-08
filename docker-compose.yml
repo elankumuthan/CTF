@@ -38,7 +38,7 @@ services:
       dockerfile: Dockerfile
     container_name: decoy_ports
     ports:
-      - "22:22"
+      - "2222:22"
       - "80:80"
       - "443:443"
       - "3306:3306"
