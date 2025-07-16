@@ -15,7 +15,7 @@ def log_honeypot_hit(path):
         f.write(f"[{datetime.datetime.now()}] {request.remote_addr} requested {path}\n")
 
 # Only respond to common brute-force path targets
-HONEY_ALLOW = ['admin', 'backup', 'login', 'uploads', 'config', 'test', 'old', 'dev', 'private']
+HONEY_ALLOW = ['admin', 'backup', 'login', 'config', 'test', 'old', 'dev', 'private']
 
 @bp.route('/', defaults={'path': ''})
 @bp.route('/<path:path>')
