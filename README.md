@@ -10,34 +10,18 @@ git clone https://github.com/your-repo-name/ctf-docker.git
 cd ctf-docker
 ```
 
-### 2. Enable Stealth Mode (Recommended)
-First, make your containers invisible to basic scans:
-```bash
-chmod +x harden_docker.sh
-./harden_docker.sh
-```
-
-### 3. Start the CTF Environment
-```bash
-docker-compose up --build
+### 2. Start the CTF Environment
+This starts the CTF environment and enables stealth mode.
+```bas
+RUNME.sh
 ```
 
 ## Shut Down
 
 ### 1. Stop the CTF Environment
+This stops the CTF environment as well as remove the stealth mode
 ```bash
-docker-compose down
-```
-
-### 2. Disable Stealth Mode
-```bash
-./unharden_docker.sh
-```
-
-### Optional: Remove All Data
-To completely remove containers and volumes:
-```bash
-docker-compose down -v
+KILLME.sh
 ```
 
 ## Prerequisites

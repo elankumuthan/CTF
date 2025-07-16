@@ -6,16 +6,17 @@ cd /home/dockUbuntu/CTF || {
     exit 1
 }
 
-echo "[~] Stopping Docker Compose containers..."
+echo "[~] Docker Compose containers..."
 docker compose down --volumes --remove-orphans
 
-echo "[~] Pruning unused Docker resources..."
-docker system prune -af --volumes
-
-echo "[+] All Docker containers, images, and volumes have been cleaned up."
-
-# Optional: Also clean up any remaining Docker networks
-echo "[~] Cleaning up unused Docker networks..."
-docker network prune -f
+echo "[~] Removing Docker hardening..."
+if [ -f "/docker_hardening/unharden_docker.sh" ]; then
+    chmod +x /docker_hardening/unharden_docker.sh
+    /docker_hardening/unharden_docker.sh
+    echo "[+] Removing docker hardening completed successfully."
+else
+    echo "[-] Docker unhardening script not found at /docker_hardening/unharden_docker.sh"
+    exit 1
+fi
 
 echo "[+] Complete cleanup finished. System is ready for fresh deployment."
