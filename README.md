@@ -10,7 +10,7 @@ git clone https://github.com/your-repo-name/ctf-docker.git
 cd ctf-docker
 ```
 
-### 3. Start the CTF Environment
+### 2. Start the CTF Environment
 This starts the CTF environment and enables stealth mode.
 ```bas
 RUNME.sh
@@ -19,14 +19,9 @@ RUNME.sh
 ## Shut Down
 
 ### 1. Stop the CTF Environment
+This stops the CTF environment as well as remove the stealth mode
 ```bash
 KILLME.sh
-```
-
-### Optional: Remove All Data
-To completely remove containers and volumes:
-```bash
-docker-compose down -v
 ```
 
 ## Prerequisites
