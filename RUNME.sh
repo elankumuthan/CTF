@@ -23,12 +23,12 @@ else
 fi
 
 echo "[~] Starting Docker hardening script..."
-if [ -f "/docker_hardening/harden_docker.sh" ]; then
-    chmod +x /docker_hardening/harden_docker.sh
-    /docker_hardening/harden_docker.sh
+if [ -f "docker_hardening/harden_docker.sh" ]; then
+    chmod +x docker_hardening/harden_docker.sh
+    docker_hardening/harden_docker.sh
     echo "[+] Docker hardening completed successfully."
 else
-    echo "[-] Docker hardening script not found at /docker_hardening/harden_docker.sh"
+    echo "[-] Docker hardening script not found at docker_hardening/harden_docker.sh"
     exit 1
 fi
 
