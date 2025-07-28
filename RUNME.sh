@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-cd /home/dockUbuntu/CTF || {
-    echo "[-] Failed to access /home/dockUbuntu/CTF"
+cd /home/ubuntu/Desktop/CTF || {
+    echo "[-] Failed to access /home/ubuntu/Desktop/CTF"
     exit 1
 }
 

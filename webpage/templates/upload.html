@@ -430,7 +430,7 @@
                 Accepted file types: Images (JPG, PNG, PDF, PHP5)<br>
                 Maximum file size: 10MB<br>
                 Files will be processed through security scanner
-                <!-- TODO: Disable X-Render header eval in prod -->
+                <!-- TODO: Disable X-Render: true header eval in prod -->
             </div>
         </form>
     </div>
@@ -568,5 +568,22 @@
             }
         }, 1000);
     </script>
+
+    <div style="text-align: center; margin-top: 30px; font-size: 0.85em; color: #00ff00; 
+                font-family: 'Courier New', Monaco, monospace; opacity: 0.8;
+                animation: glow-flicker 2s infinite alternate;">
+        ⚡ Powered by <strong>Flask + Jinja2</strong> | © 2025 my_ctf
+    </div>
+    <style>
+        @keyframes glow-flicker {
+            0%   { text-shadow: 0 0 5px #00ff00; opacity: 0.7; }
+            100% { text-shadow: 0 0 15px #00ff00; opacity: 1; }
+        }
+    </style>
+    <!-- Debug: Template engine -> Jinja2 -->
+
+</body>
+</html>
+
 </body>
 </html>

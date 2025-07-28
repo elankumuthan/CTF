@@ -40,8 +40,6 @@ RUN mkdir -p /app/utils && \
     chmod -R 777 /app/utils && \
     chown -R ey_user123:ey_user123 /app/utils
 
-# Ensure static folder exists (for mp3, css, js)
-RUN mkdir -p /app/static && chmod -R 755 /app/static
 
 # Initialize database
 RUN python3 /app/utils/clear_db.py && \
@@ -55,10 +53,6 @@ RUN chown ey_user123:ey_user123 /home/ey_user123/.bash_history
 COPY utils/public.pem /home/ey_user123/
 COPY utils/database_to_leak.db /home/ey_user123/database.db
 RUN chown ey_user123:ey_user123 /home/ey_user123/public.pem /home/ey_user123/database.db
-
-# Optional: Copy static rickroll
-COPY static/rickroll.mp3 /app/static/
-RUN chown ey_user123:ey_user123 /app/static/rickroll.mp3
 
 # Final fix for uploads ownership
 RUN chown -R ey_user123:ey_user123 /app/uploads

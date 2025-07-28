@@ -43,8 +43,12 @@ def view_profile():
         if user_id < 0 or user_id >= len(users):
             return "Invalid user ID", 404
         requested_user = users[user_id]
-        if g.user != "3y_adm!n!strat0r" and g.user != requested_user:
-            return render_template("error.html", error="Forbidden: You can only view your own profile.")
+
+        # ✅ Restrict *viewing only* (not POST)
+        if request.method == 'GET':
+            if g.user != "3y_adm!n!strat0r" and g.user != requested_user:
+                return render_template("error.html", error="Forbidden: You can only view your own profile.")
+
         username = requested_user
     else:
         username = g.user
@@ -69,15 +73,13 @@ def view_profile():
 
         # Password reset
         if 'new_password' in request.form:
-            if g.user != username:
-                return "Forbidden: You can only reset your own password.", 403
             new_password = request.form.get('new_password', '').strip()
             if not new_password:
                 return render_template("error.html", error="Password cannot be empty.")
             try:
                 conn = sqlite3.connect('utils/users.db')
                 cursor = conn.cursor()
-                if g.user == "3y_adm!n!strat0r":
+                if username == "3y_adm!n!strat0r":
                     import bcrypt
                     hashed = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
                 else:
