@@ -9,7 +9,13 @@ UPLOADS_ROOT = os.path.abspath('uploads')
 # Any files within these folders will also be accessible
 ACCESSIBLE_FOLDERS = {
     'etc',
-    'home'
+    'home',
+    'tmp',
+    'var',
+    'bin',
+    'lib',
+    'usr',
+
     # Add more folders that should be accessible for your CTF
 }
 
