@@ -40,6 +40,35 @@ def is_path_whitelisted(filepath):
     
     return False
 
+# Whitelist of folders that can be accessed via path traversal
+# Any files within these folders will also be accessible
+ACCESSIBLE_FOLDERS = {
+    'etc',
+    'home'
+    # Add more folders that should be accessible for your CTF
+}
+
+def is_path_whitelisted(filepath):
+    """Check if the resolved path is within a whitelisted folder"""
+    # Get all parent directories of the file/folder
+    path_parts = []
+    current_path = os.path.abspath(filepath)
+    
+    while True:
+        parent, folder = os.path.split(current_path)
+        if folder:
+            path_parts.append(folder)
+            current_path = parent
+        else:
+            break
+    
+    # Check if any parent directory is in the whitelist
+    for folder in path_parts:
+        if folder in ACCESSIBLE_FOLDERS:
+            return True
+    
+    return False
+
 @bp.route('/<user>/<filename>', methods=['GET'])
 def serve_user_file(user, filename):
     try:
