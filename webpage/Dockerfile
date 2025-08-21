@@ -30,15 +30,10 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Create logs folder with full access
 RUN mkdir -p /app/logs && chmod -R 777 /app/logs
 
-# Create upload directories and apply write permissions
-RUN mkdir -p /app/uploads/ey_user123 /app/uploads/guest /app/uploads/admin && \
-    chmod -R 777 /app/uploads
-
 # Ensure DB files exist and have proper perms
 RUN mkdir -p /app/utils && \
     touch /app/utils/users.db /app/utils/comments.db && \
-    chmod -R 777 /app/utils && \
-    chown -R ey_user123:ey_user123 /app/utils
+    chmod -R 777 /app/utils
 
 
 # Initialize database
