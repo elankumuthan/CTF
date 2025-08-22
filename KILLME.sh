@@ -10,12 +10,12 @@ echo "[~] Docker Compose containers..."
 docker compose down --volumes --remove-orphans
 
 echo "[~] Removing Docker hardening..."
-if [ -f "/docker_hardening/unharden_docker.sh" ]; then
-    chmod +x /docker_hardening/unharden_docker.sh
-    /docker_hardening/unharden_docker.sh
+if [ -f "CTF/docker_hardening/unharden_docker.sh" ]; then
+    chmod +x CTF/docker_hardening/unharden_docker.sh
+    CTF/docker_hardening/unharden_docker.sh
     echo "[+] Removing docker hardening completed successfully."
 else
-    echo "[-] Docker unhardening script not found at /docker_hardening/unharden_docker.sh"
+    echo "[-] Docker unhardening script not found at CTF/docker_hardening/unharden_docker.sh"
     exit 1
 fi
 
